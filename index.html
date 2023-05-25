@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #F3F3F3;
+            color: #333;
+        }
+
+        #box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 25%;
+            height: 25%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #888;
+            overflow: hidden;
+            background-color: #FFF;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #nextButton {
+            position: absolute;
+            top: 50%;
+            left: 75%;
+            transform: translate(-50%, -50%);
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background-color 0.3s;
+        }
+
+        #nextButton:hover {
+            background-color: #0056b3;
+        }
+
+        .letter {
+            position: absolute;
+            font-size: 2em;
+            color: #333;
+        }
+
+        #answer {
+            position: absolute;
+            top: 75%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <!-- The answer will appear here -->
+    </div>
+
+    <button id="nextButton">NEXT</button>
+
+    <div id="answer"></div>
+
+    <script>
+        const box = document.getElementById('box');
+        const nextButton = document.getElementById('nextButton');
+        const answerElement = document.getElementById('answer');
+
+        const words = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew", "iceberg", "jicama"];
+        let currentWordIndex = 0;
+
+        function randomPosition(letter) {
+            const boxWidth = box.offsetWidth - letter.offsetWidth;
+            const boxHeight = box.offsetHeight - letter.offsetHeight;
+            const xPos = Math.floor(Math.random() * boxWidth);
+            const yPos = Math.floor(Math.random() * boxHeight);
+
+            letter.style.left = `${xPos}px`;
+            letter.style.top = `${yPos}px`;
+        }
+
+        function updateWord() {
+            // Show previous word
+            let previousWord = '';
+            for (let i = 0; i < box.childNodes.length; i++) {
+                previousWord += box.childNodes[i].textContent;
+            }
+            if (previousWord !== '') {
+                answerElement.textContent = `ANSWER: ${previousWord}`;
+            }
+
+            // Clear the box
+            box.innerHTML = '';
+            const word = words[currentWordIndex];
+            currentWordIndex = (currentWordIndex + 1) % words.length;
+
+            // Add new letters to the box
+            for (let i = 0; i < word.length; i++) {
+                const letterElement = document.createElement('div');
+                letterElement.classList.add('letter');
+                letterElement.textContent = word[i];
+                box.appendChild(letterElement);
+            }
+        }
+
+        nextButton.onclick = updateWord;
+
+        setInterval(() => {
+            const letters = document.getElementsByClassName('letter');
+            for (let i = 0; i < letters.length; i++) {
+                randomPosition(letters[i]);
+            }
+        }, 1000);
+
+        updateWord();
+    </script>
+</body>
+
+</html>
